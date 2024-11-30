@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+    </style>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", sans-serif;
+        border: none;
+      }
+      body {
+        background-color: #1e1e1e;
+        color: white;
+      }
+      .navbar {
+        display: flex;
+        padding-inline: 10%;
+        padding-block: 2em;
+        background-color: #181818;
+      }
+      .navbar-items {
+        display: flex;
+        justify-content: flex-start;
+        gap: 1em;
+        list-style-type: none;
+      }
+      a {
+        text-decoration: none;
+        color: white;
+      }
+      .container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+        padding: 2rem;
+      }
+      .btn {
+        padding-inline: 1em;
+        padding-block: 0.5em;
+        background-color: #67b508;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+      }
+      .btn:hover {
+        background-color: #528f07;
+      }
+      .text-input {
+        padding: 0.5rem;
+        background-color: #181818;
+        color: white;
+        font-size: 16px;
+        width: 100%;
+        border-radius: 4px;
+
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      .form-textarea {
+        padding: 0.5rem;
+        background-color: #181818;
+        color: white;
+        font-size: 16px;
+        resize: none;
+        width: 100%;
+        border-radius: 4px;
+
+      }
+      .form-date {
+        width: fit-content;
+        padding-inline: 0.5rem;
+        padding-block: 0.25rem;
+        color-scheme: dark;
+        background-color: #181818;
+        color: white;
+        border-radius: 4px;
+
+      }
+    </style>
+    <title>Add task</title>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <ul class="navbar-items">
+          <li class="navbar-item"><a href="/" class="navbar-link"> Home </a></li>
+          <li class="navbar-item">
+            <a href="/add-item" class="navbar-link"> Add item </a>
+          </li>
+          <li><a href="" class="navbar-link"> GitHub </a></li>
+        </ul>
+      </nav>
+    </header>
+    <main class="container">
+      <div style="width: 100%;max-width:1000px">
+        <h1 style="margin-bottom: 1rem">Add a new task</h1>
+        <form action="/" method="POST">
+          <div class="form-group">
+            <label for="taskName">Task Name:</label>
+            <input
+              type="text"
+              class="text-input"
+              id="taskName"
+              name="taskName"
+            />
+          </div>
+          <div class="form-group">
+            <label for="taskDescription">Description:</label>
+            <textarea
+              rows="4"
+              class="form-textarea"
+              id="taskDescription"
+              name="taskDescription"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="taskDate"> Date to complete</label>
+            <input type="date" class="form-date" id="taskDate" name="taskDate" />
+          </div>
+          <button class="btn" type="submit">Add Task</button>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>
