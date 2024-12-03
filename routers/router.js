@@ -75,12 +75,14 @@ const postRequestsHandler = (req, res, next) => {
         // Mark the todo item as completed
         todoItem.status = "completed";
 
-        const modifiedContent = JSON.stringify(parsedItems, null, 2); // Pretty print the JSON
+        const modifiedContent = JSON.stringify(parsedItems, null, 4);
         fs.writeFile(todoPath, modifiedContent, (err) => {
           if (err) {
             // Handle file write error
             res.statusCode = 500;
-            res.write(JSON.stringify({ error: "Failed to update todo item" }));
+            res.write(
+              JSON.stringify({ error: "Failed to update todo item" }, null, 4)
+            );
             return res.end();
           }
 
@@ -103,6 +105,45 @@ const postRequestsHandler = (req, res, next) => {
         return res.end();
       }
     });
+  } else if (url === "/api/add-todo-item") {
+    console.log("got here!");
+    const chunks = [];
+    req.on("data", (chunk) => {
+      chunks.push(chunk);
+    });
+    req.on("end", () => {
+      const requestBody = Buffer.concat(chunks).toString(); // Combine chunks and convert to string
+      console.log(requestBody);
+      const params = new URLSearchParams(requestBody);
+      const taskData = {
+        name: params.get("taskName"),
+        description: params.get("taskDescription"),
+        status: "pending",
+        date: params.get("taskDate"),
+      };
+
+      getTodoItems((fileContent) => {
+        const parsedItems = JSON.parse(fileContent);
+        const newTodoItem = { id: parsedItems.length + 1, ...taskData };
+        parsedItems.push(newTodoItem);
+        fs.writeFile(todoPath, JSON.stringify(parsedItems, null, 4), (err) => {
+          if (err) {
+            res.statusCode = 500;
+            res.setHeader("Content-Type", "html/text");
+            res.write("Couldn't add the new todo item to the list!");
+            return res.end();
+          } else {
+            res.writeHead(303, { Location: "/" }); // Redirect to /success
+            return res.end();
+          }
+        });
+      });
+    });
+  } else {
+    console.log("unknown url");
+    console.log(url);
+    res.writeHead(303, { Location: "/404" });
+    return res.end();
   }
 };
 module.exports = route;

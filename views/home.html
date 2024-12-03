@@ -126,7 +126,7 @@
             const pendingTasks = data
               .filter((todoItem, index) => todoItem.status === "pending")
               .sort((a, b) => {
-                return new Date(b.date) - new Date(a.date); // Convert date strings to Date objects and compare
+                return new Date(b.date) - new Date(b.date); // Convert date strings to Date objects and compare
               });
 
             // Loop through each todo item and create a list item
