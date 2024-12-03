@@ -24,6 +24,10 @@
         padding-block: 2em;
         background-color: #181818;
       }
+      .inner-container {
+        width: 100%;
+        max-width: 768px;
+      }
       .navbar-items {
         display: flex;
         justify-content: flex-start;
@@ -40,9 +44,15 @@
       }
       .todo-item {
         padding: 1em;
-        background-color: #181818;
         max-width: 768px;
         border-radius: 4px;
+      }
+      .todo-item__pending {
+        background-color: #181818;
+      }
+      .todo-item__completed {
+        background-color: #181818;
+        opacity: 0.7;
       }
       .todo-btn {
         padding-inline: 1em;
@@ -52,8 +62,14 @@
         cursor: pointer;
         font-weight: 500;
       }
+      .todo-btn:disabled,
+      .todo-btn:disabled:hover {
+        cursor: default;
+        color: black;
+        background-color: #1f3504;
+      }
       .todo-btn:hover {
-        background-color: #528f07;
+        background-color: #5da109;
       }
       .container {
         display: flex;
@@ -72,6 +88,19 @@
       .todo-date {
         font-size: 12px;
         font-weight: bold;
+      }
+      #filter-container {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+        margin-bottom: 1em;
+        max-width: 768px;
+      }
+      #filter {
+        background-color: #67b508;
+        border-radius: 0.25rem;
+        padding-block: 0.25rem;
+        padding-inline: 0.25rem;
       }
 
       @media screen and (max-width: 768px) {
@@ -104,15 +133,35 @@
       </nav>
     </header>
     <main class="container">
-      <div style="width: 100%; max-width: 1000px">
-        <h1 style="margin-bottom: 2rem">Pending Tasks</h1>
+      <div class="inner-container">
+        <h1 style="margin-bottom: 1rem">Pending Tasks</h1>
+        <div id="filter-container">
+          <select name="filter" id="filter">
+            <option value="all-tasks" class="filter-option">All Tasks</option>
+            <option value="pending-tasks" class="filter-option">
+              Pending Tasks
+            </option>
+            <option value="completed-tasks" class="filter-option">
+              Completed Tasks
+            </option>
+          </select>
+        </div>
         <ul class="todo-list">
           <!-- Todo items will be dynamically inserted here -->
         </ul>
       </div>
     </main>
     <script>
+      const allFilterFn = (todoItem, index) => true;
+      const completedFilterFn = (todoItem, index) =>
+        todoItem.status === "completed";
+      const pendingFilterFn = (todoItem, index) =>
+        todoItem.status === "pending";
+
       function loadData() {
+        const todoListContainer = document.querySelector(".todo-list");
+        todoListContainer.innerHTML = "";
+        console.log("Loading data!");
         fetch("http://localhost:3000/api/get-todo-items", {
           method: "GET",
           headers: {
@@ -122,17 +171,29 @@
           .then((response) => response.json())
           .then((data) => {
             // Find the todo-list container
-            const todoListContainer = document.querySelector(".todo-list");
-            const pendingTasks = data
-              .filter((todoItem, index) => todoItem.status === "pending")
-              .sort((a, b) => {
-                return new Date(b.date) - new Date(b.date); // Convert date strings to Date objects and compare
-              });
+
+            // Filter the tasks
+            const filterValue = document.getElementById("filter").value;
+            let filterMethod = allFilterFn;
+            if (filterValue == "pending-tasks") {
+              filterMethod = pendingFilterFn;
+            } else if (filterValue == "completed-tasks") {
+              filterMethod = completedFilterFn;
+            }
+
+            const pendingTasks = data.filter(filterMethod).sort((a, b) => {
+              return new Date(b.date) - new Date(b.date); // Convert date strings to Date objects and compare
+            });
 
             // Loop through each todo item and create a list item
             pendingTasks.forEach((todo, index) => {
               const todoItem = document.createElement("li");
               todoItem.classList.add("todo-item");
+              if (todo.status === "completed") {
+                todoItem.classList.add("todo-item__completed");
+              } else {
+                todoItem.classList.add("todo-item__pending");
+              }
               todoItem.id = `todo-item-${index}`;
               todoItem.style = "margin-bottom: 0.25rem;";
               // Create the header container
@@ -171,6 +232,10 @@
               button.addEventListener("click", () => {
                 markCompleted(todo.id);
               });
+              if (todo.status === "completed") {
+                button.disabled = true;
+                console.log("DISABLED BUTTON!");
+              }
               // Append all elements to the todo item
               todoItem.appendChild(headerContainer);
               todoItem.appendChild(description);
@@ -201,6 +266,8 @@
             }
           });
       }
+      document.getElementById("filter").addEventListener("change", loadData);
+
       loadData(); // Load the data when the web page is loaded
     </script>
   </body>

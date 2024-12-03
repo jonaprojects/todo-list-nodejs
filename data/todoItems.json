@@ -4,7 +4,7 @@
         "name": "Take out the trash",
         "description": "I have to do it already",
         "date": "2024-11-30",
-        "status": "pending"
+        "status": "completed"
     },
     {
         "id": 2,
@@ -18,41 +18,13 @@
         "name": "Finish project report",
         "description": "Complete the final report for the project and submit it.",
         "date": "2024-12-02",
-        "status": "pending"
+        "status": "completed"
     },
     {
         "id": 4,
         "name": "Call Mom",
         "description": "Check in with Mom and see how she is doing.",
         "date": "2024-12-03",
-        "status": "pending"
-    },
-    {
-        "id": 5,
-        "name": "Clean the garage",
-        "description": "Organize the tools and sweep the floor.",
-        "date": "2024-12-05",
-        "status": "pending"
-    },
-    {
-        "id": 6,
-        "name": "Attend team meeting",
-        "description": "Discuss the progress on ongoing projects with the team.",
-        "date": "2024-12-06",
-        "status": "pending"
-    },
-    {
-        "id": 7,
-        "name": "a new task",
-        "description": "my best new task",
-        "status": "completed",
-        "date": "2024-12-20"
-    },
-    {
-        "id": 8,
-        "name": "Finishing that linear algebra exercise",
-        "description": "I don't wanna do it but it seems that I have no choice...",
-        "status": "pending",
-        "date": "2024-12-12"
+        "status": "completed"
     }
 ]
