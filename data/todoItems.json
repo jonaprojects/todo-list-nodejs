@@ -4,7 +4,7 @@
         "name": "Take out the trash",
         "description": "I have to do it already",
         "date": "2024-11-30",
-        "status": "completed"
+        "status": "pending"
     },
     {
         "id": 2,
@@ -18,13 +18,13 @@
         "name": "Finish project report",
         "description": "Complete the final report for the project and submit it.",
         "date": "2024-12-02",
-        "status": "completed"
+        "status": "pending"
     },
     {
         "id": 4,
         "name": "Call Mom",
         "description": "Check in with Mom and see how she is doing.",
         "date": "2024-12-03",
-        "status": "completed"
+        "status": "pending"
     }
 ]

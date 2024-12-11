@@ -1,5 +1,7 @@
 const fs = require("fs");
 const path = require("path");
+const { URL } = require("url"); // Built-in module for parsing URLs
+
 const todoPath = path.join(__dirname, "..", "data", "todoItems.json");
 
 const { loadView, renderView } = require("../utils/loadView");
@@ -8,9 +10,10 @@ const route = (req, res, next) => {
   const method = req.method;
   if (method == "GET") {
     getRequestsHandler(req, res, next);
-  }
-  if (method == "POST") {
+  } else if (method == "POST") {
     postRequestsHandler(req, res, next);
+  } else if (method == "DELETE") {
+    deleteRequestsHandler(req, res, next);
   }
 };
 
@@ -146,4 +149,50 @@ const postRequestsHandler = (req, res, next) => {
     return res.end();
   }
 };
+
+const deleteRequestsHandler = (req, res, next) => {
+  const url = req.url;
+  if (url.startsWith("/api/remove-item")) {
+    console.log("Deleting an item from the TODO list");
+
+    // Parse the query string to extract the `id` parameter
+    const urlObject = new URL(`http://localhost:3000${req.url}`);
+    const itemID = parseInt(urlObject.searchParams.get("id"));
+
+    if (isNaN(itemID)) {
+      // If the `id` is not a valid number, return an error response
+      res.setHeader("Content-Type", "application/json");
+      res.write(JSON.stringify({ sucess: false }));
+      return res.end();
+    } else {
+      // If we got here, the id was parsed into an integer successfully
+      removeTodoItem(itemID, (result) => {
+        res.setHeader("Content-Type", "application/json");
+        if (result.success) {
+          res.write(JSON.stringify({ success: true }));
+        } else {
+          res.write(JSON.stringify({ success: false }));
+        }
+        return res.end(); // End response after the callback
+      });
+    }
+    return; // Ensure no further code in the handler is executed
+  }
+};
+
+const removeTodoItem = (itemID, callbackFn) => {
+  const todoItems = getTodoItems((fileContent) => {
+    const parsedItems = JSON.parse(fileContent);
+    const processedItems = parsedItems.filter((item) => item.id != itemID);
+    const newFileContent = JSON.stringify(processedItems, null, 4);
+    fs.writeFile(todoPath, newFileContent, (err) => {
+      if (err) {
+        callbackFn({ success: false, error: err.message });
+      } else {
+        callbackFn({ success: true, error: null });
+      }
+    });
+  });
+};
+
 module.exports = route;
